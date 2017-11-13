@@ -20,8 +20,8 @@ body {
 
 @font-face {
   font-family: "Swiss911";
-  src: url("http://dart.iamblegend.com/fonts/swiss911.eot");
-  src: url("http://dart.iamblegend.com/fonts/swiss911.eot?#iefix") format("embedded-opentype"),url("http://dart.iamblegend.com/fonts/swiss911.woff2") format("woff2"),url("http://dart.iamblegend.com/fonts/swiss911.woff") format("woff"),url("http://dart.iamblegend.com/fonts/swiss911.ttf") format("truetype");
+  src: url("https://www.dropbox.com/s/2dkb95u6l507tgp/swiss911.eot");
+  src: url("https://www.dropbox.com/s/2dkb95u6l507tgp/swiss911.eot?#iefix") format("embedded-opentype"),url("https://www.dropbox.com/s/b83qbg4tviqz5yg/swiss911.woff2") format("woff2"),url("https://www.dropbox.com/s/wqwkpe71mxe7e8b/swiss911.woff") format("woff"),url("https://www.dropbox.com/s/xehi1q1plbsn9qa/swiss911.ttf") format("truetype");
 }
 
 html, body {

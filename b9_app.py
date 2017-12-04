@@ -35,7 +35,6 @@ if __name__ == "__main__":
     while not count:
         count = input("Enter an integer wordcount greater than 1000: ")  # TODO: verify `count` is over 1000
         try:
-            int(count)
             count = int(count)
             break
         except ValueError:
@@ -46,6 +45,7 @@ if __name__ == "__main__":
 
     tng_actors = {member: actor.Actor(all_tng_text, member, cast, 3) for member in cast}
     html = "<html lang='en'>\n    <head>\n        <title>B-9 Indifference</title>\n        " + \
+           "<meta charset='UTF-8'>\n        " + \
            "<link href='styles.css' rel='stylesheet'/>\n    </head>\n    <body>"
 
     word_count = count

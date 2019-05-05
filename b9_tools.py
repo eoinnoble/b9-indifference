@@ -1,5 +1,3 @@
-from __future__ import print_function
-
 import markovify
 import nltk
 import re
@@ -11,6 +9,7 @@ class RangeDict(dict):
 
     Overrides `__getitem__` to handle keys that are ranges.
     """
+
     def __getitem__(self, item):
         if type(item) != range:
             for key in self:
@@ -18,16 +17,17 @@ class RangeDict(dict):
                     return self[key]
             raise KeyError(item)
         else:
-            return super(RangeDict, self).__getitem__(item)
+            return super().__getitem__(item)
 
 
 class POSifiedText(markovify.Text):
     """
     A markovify.Text model that obeys sentence structure better than the naive model.
 
-    Uses NLTK's part-of-speech tagger (nltk.pos_tag), which is VERY slow but seems to do a better job of parsing my
-    text corpora than spaCy, which would be faster.
+    Uses NLTK's part-of-speech tagger (nltk.pos_tag), which is VERY slow but seems to do a better
+    job of parsing my text corpora than spaCy, which would be faster.
     """
+
     def word_split(self, sentence):
         words = re.split(self.word_split_pattern, sentence)
         words = ["::".join(tag) for tag in nltk.pos_tag(words)]

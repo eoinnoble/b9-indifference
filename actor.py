@@ -1,5 +1,3 @@
-from __future__ import print_function
-
 import fnmatch
 import json
 import random
@@ -21,30 +19,39 @@ class Actor(object):
         line_nums (list of num):    all the line numbers from `source_text` in which `name` speaks
         text (str):                 all the lines from `source_text` that `name` speaks
         model (POSifiedText):       a markovify.Text model of `text` for generating sentences from
-                                        relationships (RangeDict): used for working out the likely next speaker
-                                        by `next_speaker`
+                                        relationships (RangeDict): used for working out the likely
+                                        next speaker by `next_speaker`
         relationships_limit (num):  used as the upper random number limit by `choose_next_speaker`
 
     """
+
     def __init__(self, source_text, name, cast, state_size=2):
         self.source_text = source_text
         self.name = name
         self.cast = cast
-        self.line_nums, self.text = zip(*[(line[0], line[1][1]) for line in enumerate(self.source_text)
-                                          if line[1][0] == self.name])
+        self.line_nums, self.text = zip(
+            *[
+                (line[0], line[1][1])
+                for line in enumerate(self.source_text)
+                if line[1][0] == self.name
+            ]
+        )
         self.model = self.get_or_generate_model(self.name, self.text, state_size)
-        self.relationships, self.relationships_limit = self.calculate_speaker_relationships()
+        self.relationships, self.relationships_limit = (
+            self.calculate_speaker_relationships()
+        )
 
     @staticmethod
     def get_or_generate_model(name, text, state_size, scripts_location="/scripts/"):
         """
         Retrieve a stored model or generate a new one and store it
 
-        Generating models can be a time-intensive process, especially during testing, but thankfully Markovify offers a
-        `to_json()` method for its model objects. I have used a file naming convention of ACTOR_STATE-SIZE.JSON, but you
-        could use whatever you like as long as you provide the correct `pattern` to `find`. This method looks for a file
-        of the right name or generates the model and saves it to the scripts folder as JSON. It returns a Markovify text
-        model either way.
+        Generating models can be a time-intensive process, especially during testing, but
+        thankfully Markovify offers a `to_json()` method for its model objects. I have used a file
+        naming convention of ACTOR_STATE-SIZE.JSON, but youcould use whatever you like as long as
+        you provide the correct `pattern` to `find`. This method looks for a file of the right name
+        or generates the model and saves it to the scripts folder as JSON. It returns a Markovify
+        text model either way.
 
         :param name:             str, name of actor to return model for
         :param text:             list of str, text to train the model on
@@ -65,7 +72,9 @@ class Actor(object):
             :return:        list of str or empty list, any matching file name ends up in the list
             """
             result = []
-            files = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
+            files = [
+                f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))
+            ]
             for file in files:
                 if fnmatch.fnmatch(file, pattern):
                     result.append(file)
@@ -73,13 +82,17 @@ class Actor(object):
             return result
 
         if find(name + "_" + str(state_size) + ".json", scripts_directory):
-            with open(scripts_directory + name + "_" + str(state_size) + ".json") as json_data:
+            with open(
+                scripts_directory + name + "_" + str(state_size) + ".json"
+            ) as json_data:
                 model_json = json.load(json_data)
             return POSifiedText.from_json(model_json)
         else:
             model = POSifiedText(text, state_size=state_size)
             model_json = model.to_json()
-            with open(scripts_directory + name + "_" + str(state_size) + ".json", "w") as json_data:
+            with open(
+                scripts_directory + name + "_" + str(state_size) + ".json", "w"
+            ) as json_data:
                 json.dump(model_json, json_data, indent=4)
             return model
 
@@ -90,7 +103,9 @@ class Actor(object):
         :param sent_length: int, the maximum desired character length of the returned string
         :return:            str, the sentence string itself
         """
-        return self.model.make_short_sentence(sent_length, tries=100)  # Higher `state_size` will require more `tries`
+        return self.model.make_short_sentence(
+            sent_length, tries=100  # Higher `state_size` will require more `tries`
+        )
 
     def calculate_speaker_relationships(self):
         """
@@ -103,8 +118,10 @@ class Actor(object):
         rel_ranges = {}
         for line in self.line_nums:
             try:
-                next_speaker = self.source_text[line+1][0]
-                if next_speaker in self.cast and next_speaker != self.name:  # ignore speakers we don't care about
+                next_speaker = self.source_text[line + 1][0]
+                if (
+                    next_speaker in self.cast and next_speaker != self.name
+                ):  # ignore speakers we don't care about
                     if next_speaker in rels.keys():
                         rels[next_speaker] += 1
                     else:
@@ -115,12 +132,20 @@ class Actor(object):
         total_rels = reduce((lambda x, y: x + y), rels.values())
         rel_counter = 0
 
-        # We want a dict that looks like {range(0,10): "PICARD", […], range(n,`total_rels`): "WHOMEVER"}
+        # We want a dict that looks like:
+        # {
+        #     range(0,10): "PICARD",
+        #     […],
+        #     range(n,`total_rels`): "WHOMEVER"
+        # }
         for actor in rels.keys():
             rel_ranges[range(rel_counter, rel_counter + rels[actor])] = actor
             rel_counter += rels[actor]
 
-        return RangeDict(rel_ranges), total_rels  # Need to pass back `total_rels` for `next_speaker`
+        return (
+            RangeDict(rel_ranges),
+            total_rels,  # Need to pass back `total_rels` for `next_speaker`
+        )
 
     def choose_next_speaker(self):
         """

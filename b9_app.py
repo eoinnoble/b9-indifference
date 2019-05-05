@@ -1,23 +1,15 @@
-from __future__ import print_function
-
 import codecs
 import os
 import re
+import textwrap
 
 from bs4 import BeautifulSoup as Soup
 
-import actor, script
-
-
-current_file_path = os.path.abspath(__file__)
-scripts_directory = os.path.split(current_file_path)[0] + "/scripts/"
-
-# Get raw text as string, splitting each line into a two-item list of actor name and text
-with open(scripts_directory + "source_scripts.txt") as f:
-    all_tng_text = [line.split(" | ") for line in f.readlines()]
+import actor
+import script
 
 # Edit this as appropriate to add more people to the final output
-cast = [
+CAST = [
     "BEVERLY",
     "COMPUTER",
     "DATA",
@@ -27,37 +19,67 @@ cast = [
     "RIKER",
     "TROI",
     "WESLEY",
-    "WORF"
+    "WORF",
 ]
+CURRENT_FILE_PATH = os.path.abspath(__file__)
+SCRIPTS_DIRECTORY = f"{os.path.split(CURRENT_FILE_PATH)[0]}/scripts/"
+
+
+# Get raw text as string, splitting each line into a two-item list of actor name and text
+with open(SCRIPTS_DIRECTORY + "source_scripts.txt") as f:
+    all_tng_text = [line.split(" | ") for line in f.readlines()]
 
 if __name__ == "__main__":
-    count = None
-    while not count:
-        count = input("Enter an integer wordcount greater than 1000: ")  # TODO: verify `count` is over 1000
+    word_count = 0
+    while word_count <= 1000:
+        word_count = input("Enter an integer wordcount greater than 1000: ")
         try:
-            count = int(count)
-            break
+            word_count = int(word_count)
+            if word_count > 1000:
+                break
         except ValueError:
-            print("%s isn’t an integer…" % count)
-            count = None
+            print(f"{word_count} isn’t an integer…")
+            word_count = 0
 
-    output = codecs.open(os.path.split(current_file_path)[0] + "/output/output.html", "w", "utf-8")
+    with codecs.open(
+        f"{os.path.split(CURRENT_FILE_PATH)[0]}/output/output.html", "w", "utf-8"
+    ) as output:
 
-    tng_actors = {member: actor.Actor(all_tng_text, member, cast, 3) for member in cast}
-    html = "<html lang='en'>\n    <head>\n        <title>B-9 Indifference</title>\n        " + \
-           "<meta charset='UTF-8'>\n        " + \
-           "<link href='styles.css' rel='stylesheet'/>\n    </head>\n    <body>"
+        tng_actors = {
+            member: actor.Actor(all_tng_text, member, CAST, 3) for member in CAST
+        }
+        script = script.Script(1000, tng_actors)
 
-    word_count = count
-    script = script.Script(1000, tng_actors)
-    while word_count > 0:
-        episode_text = script.generate_episode()
-        episode_length = len(list(filter(None, re.split(r'\s+', re.sub(r'<(.*?)>+', '', episode_text)))))
-        html += episode_text
-        word_count -= episode_length
+        html = textwrap.dedent(
+            """\
+            <html lang='en'>
+                <head>
+                    <title>B-9 Indifference</title>
+                    <meta charset='UTF-8'>
+                    <link href='styles.css' rel='stylesheet'/>
+                </head>
+                <body>
+            """
+        )
 
-    html += "</body>\n</html>"
+        while word_count > 0:
+            episode_text = script.generate_episode()
+            episode_length = len(
+                list(
+                    filter(
+                        None, re.split(r"\s+", re.sub(r"<(.*?)>+", "", episode_text))
+                    )
+                )
+            )
+            html += episode_text
+            word_count -= episode_length
 
-    soup = Soup(html, 'html.parser')
-    print(soup.prettify(), file=output)
-    output.close()
+        html += textwrap.dedent(
+            """
+            </body>
+            </html>
+            """
+        )
+
+        soup = Soup(html, "html.parser")
+        print(soup.prettify(), file=output)

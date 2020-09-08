@@ -37,9 +37,10 @@ class Actor(object):
             ]
         )
         self.model = self.get_or_generate_model(self.name, self.text, state_size)
-        self.relationships, self.relationships_limit = (
-            self.calculate_speaker_relationships()
-        )
+        (
+            self.relationships,
+            self.relationships_limit,
+        ) = self.calculate_speaker_relationships()
 
     @staticmethod
     def get_or_generate_model(name, text, state_size, scripts_location="/scripts/"):

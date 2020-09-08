@@ -20,9 +20,7 @@ class Script(object):
         self.length = length
         self.cast = cast
         self.lines_per_ep = lines_per_ep
-        self.stardate = (
-            "42353.7"
-        )  # The stardate of the first episode of Star Trek: The Next Generation
+        self.stardate = "42353.7"  # The stardate of the first episode of Star Trek: The Next Generation
 
     def increment_stardate(self):
         """

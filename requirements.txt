@@ -1,3 +1,13 @@
-beautifulsoup4
-markovify
-nltk
+beautifulsoup4==4.9.1
+click==7.1.2
+joblib==0.16.0
+markovify==0.8.3
+mypy==0.782
+mypy-extensions==0.4.3
+nltk==3.5
+regex==2020.7.14
+soupsieve==2.0.1
+tqdm==4.48.2
+typed-ast==1.4.1
+typing-extensions==3.7.4.3
+Unidecode==1.1.1

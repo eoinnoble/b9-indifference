@@ -1,5 +1,6 @@
 import re
 from collections.abc import MutableMapping
+from typing import Dict, List
 
 import markovify
 import nltk
@@ -8,7 +9,7 @@ import nltk
 class RangeDict(MutableMapping):
     """Enables a dictionary whose keys are ranges."""
 
-    def __init__(self, iterable):
+    def __init__(self, iterable: Dict):
         if not isinstance(iterable, dict):
             raise TypeError("You must pass a dictionary to RangeDict")
 
@@ -45,11 +46,11 @@ class POSifiedText(markovify.Text):
     job of parsing my text corpora than spaCy, which would be faster.
     """
 
-    def word_split(self, sentence):
+    def word_split(self, sentence: str) -> List:
         words = re.split(self.word_split_pattern, sentence)
         words = ["::".join(tag) for tag in nltk.pos_tag(words)]
         return words
 
-    def word_join(self, words):
+    def word_join(self, words: List) -> str:
         sentence = " ".join(word.split("::")[0] for word in words)
         return sentence

@@ -1,9 +1,9 @@
 import fnmatch
 import json
-import random
 import os
-
+import random
 from functools import reduce
+from typing import Dict, List, Tuple
 
 from b9_tools import POSifiedText, RangeDict
 
@@ -25,7 +25,7 @@ class Actor(object):
 
     """
 
-    def __init__(self, source_text, name, cast, state_size=2):
+    def __init__(self, source_text: List, name: str, cast: List, state_size: int = 2):
         self.source_text = source_text
         self.name = name
         self.cast = cast
@@ -43,7 +43,9 @@ class Actor(object):
         ) = self.calculate_speaker_relationships()
 
     @staticmethod
-    def get_or_generate_model(name, text, state_size, scripts_location="/scripts/"):
+    def get_or_generate_model(
+        name: str, text: List, state_size: int, scripts_location: str = "/scripts/"
+    ) -> POSifiedText:
         """
         Retrieve a stored model or generate a new one and store it
 
@@ -64,7 +66,7 @@ class Actor(object):
         current_file_path = os.path.abspath(__file__)
         scripts_directory = os.path.split(current_file_path)[0] + scripts_location
 
-        def find(pattern, path):
+        def find(pattern: str, path: str) -> List:
             """
             Finds the *first* instance of a file name in a single directory.
 
@@ -97,7 +99,7 @@ class Actor(object):
                 json.dump(model_json, json_data, indent=4)
             return model
 
-    def generate_sentence(self, sent_length):
+    def generate_sentence(self, sent_length: int) -> str:
         """
         Generate a sentence from `model` of a given length.
 
@@ -108,15 +110,15 @@ class Actor(object):
             sent_length, tries=100  # Higher `state_size` will require more `tries`
         )
 
-    def calculate_speaker_relationships(self):
+    def calculate_speaker_relationships(self) -> Tuple[RangeDict, int]:
         """
         Work out the likelihood of other `cast` members speaking after `name`.
 
         :return: RangeDict, ranges and possible speakers; and
                  int, maximum number for the `choose_next_speaker` random number
         """
-        rels = {}
-        rel_ranges = {}
+        rels: Dict = {}
+        rel_ranges: Dict = {}
         for line in self.line_nums:
             try:
                 next_speaker = self.source_text[line + 1][0]
@@ -148,7 +150,7 @@ class Actor(object):
             total_rels,  # Need to pass back `total_rels` for `next_speaker`
         )
 
-    def choose_next_speaker(self):
+    def choose_next_speaker(self) -> str:
         """
         Decides who should speak next after our current speaker.
 

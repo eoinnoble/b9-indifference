@@ -6,7 +6,7 @@ import textwrap
 from bs4 import BeautifulSoup as Soup
 
 import actor
-import script
+from script import Script
 
 # Edit this as appropriate to add more people to the final output
 CAST = [
@@ -32,14 +32,14 @@ with open(SCRIPTS_DIRECTORY + "source_scripts.txt") as f:
 if __name__ == "__main__":
     word_count = 0
     while word_count <= 1000:
-        word_count = input("Enter an integer wordcount greater than 1000: ")
         try:
-            word_count = int(word_count)
-            if word_count > 1000:
-                break
+            word_count = int(input("Enter an integer wordcount greater than 1000: "))
         except ValueError:
             print(f"{word_count} isn’t an integer…")
             word_count = 0
+        else:
+            if word_count > 1000:
+                break
 
     with codecs.open(
         f"{os.path.split(CURRENT_FILE_PATH)[0]}/output/output.html", "w", "utf-8"
@@ -48,7 +48,7 @@ if __name__ == "__main__":
         tng_actors = {
             member: actor.Actor(all_tng_text, member, CAST, 3) for member in CAST
         }
-        script = script.Script(1000, tng_actors)
+        script = Script(1000, tng_actors)
 
         html = textwrap.dedent(
             """\

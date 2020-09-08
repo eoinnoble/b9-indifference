@@ -1,6 +1,7 @@
 import random
 import re
 import textwrap
+from typing import Dict
 
 
 class Script(object):
@@ -16,13 +17,13 @@ class Script(object):
 
     """
 
-    def __init__(self, length, cast, lines_per_ep=1000):
+    def __init__(self, length: int, cast: Dict, lines_per_ep: int = 1000):
         self.length = length
         self.cast = cast
         self.lines_per_ep = lines_per_ep
         self.stardate = "42353.7"  # The stardate of the first episode of Star Trek: The Next Generation
 
-    def increment_stardate(self):
+    def increment_stardate(self) -> str:
         """
         Return a stardate for use in the script.
 
@@ -47,7 +48,7 @@ class Script(object):
         day = random.randint(1, 7)
         return f"{new_stardate}{str(additional_digits)}.{str(day)}"
 
-    def generate_episode(self):
+    def generate_episode(self) -> str:
         """
         Generates an "episode" for our script.
 

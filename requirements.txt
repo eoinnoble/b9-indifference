@@ -4,25 +4,25 @@
 #
 #    pip-compile requirements.in
 #
-beautifulsoup4==4.9.1
+beautifulsoup4==4.10.0
     # via -r requirements.in
 black==21.11b1
     # via -r requirements.in
-click==7.1.2
+click==8.0.3
     # via
     #   black
     #   nltk
-joblib==0.16.0
+joblib==1.1.0
     # via nltk
-markovify==0.8.3
+markovify==0.9.3
     # via -r requirements.in
-mypy==0.782
+mypy==0.910
     # via -r requirements.in
 mypy-extensions==0.4.3
     # via
     #   black
     #   mypy
-nltk==3.5
+nltk==3.6.5
     # via -r requirements.in
 pathspec==0.9.0
     # via black
@@ -32,17 +32,17 @@ regex==2021.11.10
     # via
     #   black
     #   nltk
-soupsieve==2.0.1
+soupsieve==2.3.1
     # via beautifulsoup4
+toml==0.10.2
+    # via mypy
 tomli==1.2.2
     # via black
-tqdm==4.48.2
+tqdm==4.62.3
     # via nltk
-typed-ast==1.4.1
-    # via mypy
 typing-extensions==4.0.0
     # via
     #   black
     #   mypy
-unidecode==1.1.1
+unidecode==1.3.2
     # via markovify
